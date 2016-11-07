@@ -1,0 +1,47 @@
+<configuration>
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+    <contextListener class="ch.qos.logback.classic.jul.LevelChangePropagator">
+        <resetJUL>true</resetJUL>
+    </contextListener>
+
+    <appender name="SERVICE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date %.-3level %-16X{traceId} %-25logger{0} %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ACCESS" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg %X{traceId}%n</pattern>
+        </encoder>
+    </appender>
+
+    <property name="async_queue_size" value="${queue.size:-1024}"/>
+    <property name="async_max_flush_time" value="${max.flush.time:-0}"/>
+
+    <appender name="ASYNC-SERVICE" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${async_queue_size}</queueSize>
+        <maxFlushTime>${async_max_flush_time}</maxFlushTime>
+        <appender-ref ref="SERVICE"/>
+    </appender>
+
+    <appender name="ASYNC-ACCESS" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>${async_queue_size}</queueSize>
+        <maxFlushTime>${async_max_flush_time}</maxFlushTime>
+        <appender-ref ref="ACCESS"/>
+    </appender>
+
+    <logger name="com.twitter" level="debug"/>
+
+    <root level="${log_level:-DEBUG}">
+        <appender-ref ref="ASYNC-SERVICE"/>
+    </root>
+
+    <logger name="com.twitter.finatra.http.filters.AccessLoggingFilter"
+            level="debug"
+            additivity="false">
+        <appender-ref ref="ASYNC-ACCESS"/>
+    </logger>
+
+</configuration>
