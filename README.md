@@ -3,6 +3,13 @@
 A fintra http server example. I tried to cover as much as possible from the finatra functionality that you would need.
 My intent is only to show you how to setup the finatra server and how to inject services. The services can be designed in your own way. 
 
+Following has been used in this sample project
+* swagger
+* jwt authentication
+* twitter modules
+* twitter futures
+* google guice injection
+
 ### Advise
 * NEVER block a future or you will have concurrency issues.
 * TRY to covert scala futures at source. (ex. let your slick repositories return twitter futures instead of the scala futures)
@@ -13,5 +20,6 @@ My intent is only to show you how to setup the finatra server and how to inject 
 * SwaggerHttpDocument -> Swagger injection
 * TwitterConverters -> converter function between scala and twitter futures.
 * resources -> Fintra controllers
+* JwtAuthenticate -> json web token authentication
 
 
