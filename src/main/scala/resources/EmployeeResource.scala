@@ -34,7 +34,7 @@ class EmployeeResource @Inject() (employeeService: EmployeeService) extends Cont
         EmployeeGet(emp.key, emp.firstName, emp.lastName, CompanyGet(emp.company.key,
           emp.company.companyName))
       )
-      response.ok.body(EmployeeList(mapped))
+      CreateResponse.ok(response).body(EmployeeList(mapped))
     }
   }
 
@@ -48,8 +48,8 @@ class EmployeeResource @Inject() (employeeService: EmployeeService) extends Cont
   } { request: Request =>
     val findWithKey = request.params.getLong("employeeKey")
     futurePool(employeeService.find(findWithKey.getOrElse(-1))).flatten map {
-      case Some(emp) => response.ok.body(emp)
-      case None => response.notFound
+      case Some(emp) => CreateResponse.ok(response).body(emp)
+      case None => CreateResponse.notFound(response)
     }
   }
 
@@ -63,8 +63,8 @@ class EmployeeResource @Inject() (employeeService: EmployeeService) extends Cont
     val post = request.employee
     val mapped = EmployseeSave(post.firstName, post.lastName, post.companyId)
     futurePool(employeeService.save(mapped)).flatten map {
-      case true => response.ok
-      case false => response.internalServerError
+      case true => CreateResponse.ok(response)
+      case false => CreateResponse.error(response)
     }
   }
 
@@ -78,9 +78,9 @@ class EmployeeResource @Inject() (employeeService: EmployeeService) extends Cont
   } { request: Request =>
     val key = request.params.getLongOrElse("employeeKey", 0)
     futurePool(employeeService.delete(key)).flatten map {
-      case 200 => response.ok
-      case 404 => response.notFound
-      case _ => response.internalServerError
+      case 200 => CreateResponse.ok(response)
+      case 404 => CreateResponse.notFound(response)
+      case _ => CreateResponse.error(response)
     }
   }
 

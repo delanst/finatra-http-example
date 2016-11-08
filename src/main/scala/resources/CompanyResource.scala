@@ -25,11 +25,10 @@ class CompanyResource @Inject() (companyService: CompanyService) extends Control
     o.tags(List("Company"))
       .summary("List with all companies")
       .responseWith[ CompanyList ](200, "List with companies")
-
   } { request: Request =>
     futurePool(companyService.all).flatten map { comps =>
       val mapped = comps.map(comp => CompanyGet(comp.key, comp.companyName))
-      response.ok.body(CompanyList(mapped))
+      CreateResponse.ok(response).body(CompanyList(mapped))
     }
 
   }
@@ -44,8 +43,9 @@ class CompanyResource @Inject() (companyService: CompanyService) extends Control
     val key = request.params.getLongOrElse("key", 0L)
 
     futurePool(companyService.find(key)).flatten map {
-      case Some(comp) => response.ok.body(CompanyWrapper(CompanyGet(comp.key, comp.companyName)))
-      case None => response.notFound
+      case Some(comp) => CreateResponse.ok(response)
+        .body(CompanyWrapper(CompanyGet(comp.key, comp.companyName)))
+      case None => CreateResponse.notFound(response)
     }
   }
 
@@ -59,8 +59,8 @@ class CompanyResource @Inject() (companyService: CompanyService) extends Control
     val post = request.company
     val mapped = Company(None, post.companyName)
     futurePool(companyService.save(mapped)).flatten map {
-      case true => response.ok
-      case false => response.internalServerError()
+      case true => CreateResponse.ok(response)
+      case false => CreateResponse.error(response)
     }
   }
 
@@ -74,9 +74,9 @@ class CompanyResource @Inject() (companyService: CompanyService) extends Control
   } { request : Request =>
     val key = request.params.getLongOrElse("companyKey", 0)
     futurePool(companyService.delete(key)).flatten map {
-      case 200 => response.ok
-      case 404 => response.notFound
-      case _ => response.internalServerError
+      case 200 => CreateResponse.ok(response)
+      case 404 => CreateResponse.notFound(response)
+      case _ => CreateResponse.error(response)
     }
   }
 
