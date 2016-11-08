@@ -7,4 +7,6 @@ object API {
 
   val version = api.getString("version")
   val baseUrl = api.getString("baseUrl") + version
+
+  val corsServer = api.getString("cors")
 }

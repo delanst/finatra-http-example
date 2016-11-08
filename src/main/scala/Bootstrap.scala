@@ -6,7 +6,7 @@ import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import io.swagger.models.Info
-import resources.{AccountResource, CompanyResource, EmployeeResource}
+import resources.{AccountResource, CompanyResource, EmployeeResource, PreflightResource}
 import resources.filter.{JwtAuthenticateFilter, UnauthorizedExcetpionMapper}
 import resources.module.{AccountModule, CompanyModule, EmployeeModule}
 
@@ -32,6 +32,7 @@ class BootstrapRestServer extends HttpServer {
       .filter[CommonFilters]
       .add[WebjarsController]
       .add(new SwaggerController(swagger = SwaggerHttpDocument))
+      .add[PreflightResource] // add preflight options with CORS
       .add[AccountResource] // do NOT add authentication filter here
       .add[JwtAuthenticateFilter, EmployeeResource]
       .add[JwtAuthenticateFilter, CompanyResource]

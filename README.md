@@ -34,10 +34,19 @@ Opposed to the scala future we use here twitter futures. I find them richer then
 Whatever you choose always convert futures at the root!!! If you have a slick repository convert it immediately to  twitter futures for
 further alignment of your application.
 
-### Guice injection
+#### Guice injection
 Guice allows you to inject services into the finatra framework. Here we use the minimum for the injection of services into
 our controllers. 
 This is accomplished with the @Inject annotation in the Employee and Company controller.
+
+#### Preflight
+Most browsers perform a preflight call. They call the options on your context before the GET, PUT, POST, DELETE. The
+header information is used in order to check your request headers against the http server. If something is wrong with
+the configuration then the call will fail. This is important if you server would be called by a angular app.
+So we need to set some headers in order to pass the pre-flight check. Here are the headers that are most common.
+* Access-Control-Allow-Origin => set * (in other environment you will need to specify the correct dns)
+* Access-Control-Allow-Methods => HEAD, GET, PUT, POST, DELETE, OPTIONS (choose allowed methods for you)
+* Access-Control-Allow-Headers => Origin, X-Requested-With, Content-Type, Accept, Authorization (if you have some extra headers add them here.)
 
 ### Start
 * Run Bootstrap
