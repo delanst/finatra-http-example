@@ -10,6 +10,10 @@ Following has been used in this sample project
 * twitter futures
 * google guice injection
 
+### Start
+* Run Bootstrap
+* Go to http://localhost:8888/api-docs/ui
+
 ### Advise
 * NEVER block a future or you will have concurrency issues.
 * TRY to covert scala futures at source. (ex. let your slick repositories return twitter futures instead of the scala futures)
@@ -21,5 +25,9 @@ Following has been used in this sample project
 * TwitterConverters -> converter function between scala and twitter futures.
 * resources -> Fintra controllers
 * JwtAuthenticate -> json web token authentication
+
+### Info
+* The path api/v1/login/authenticate must be improved with an ecryped password
+* Always setup your api in https
 
 
