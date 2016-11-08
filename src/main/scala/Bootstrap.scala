@@ -6,7 +6,7 @@ import com.twitter.finatra.http.HttpServer
 import com.twitter.finatra.http.filters.{CommonFilters, LoggingMDCFilter, TraceIdMDCFilter}
 import com.twitter.finatra.http.routing.HttpRouter
 import io.swagger.models.Info
-import resources.{AccountResource, EmployeeResource}
+import resources.{AccountResource, CompanyResource, EmployeeResource}
 import resources.filter.{JwtAuthenticateFilter, UnauthorizedExcetpionMapper}
 import resources.module.{AccountModule, CompanyModule, EmployeeModule}
 
@@ -34,6 +34,7 @@ class BootstrapRestServer extends HttpServer {
       .add(new SwaggerController(swagger = SwaggerHttpDocument))
       .add[AccountResource] // do NOT add authentication filter here
       .add[JwtAuthenticateFilter, EmployeeResource]
+      .add[JwtAuthenticateFilter, CompanyResource]
       .exceptionMapper[UnauthorizedExcetpionMapper]
   }
 

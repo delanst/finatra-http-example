@@ -7,6 +7,10 @@ trait CompanyService {
   def all: TwitterFuture[ Seq[ Company ] ]
 
   def find (key: Long): TwitterFuture[ Option[ Company ] ]
+
+  def save (employee: Company): TwitterFuture[ Boolean ]
+
+  def delete (companyKey: Long): TwitterFuture[ Int ]
 }
 
 class CompanyServiceImpl extends CompanyService {
@@ -25,6 +29,20 @@ class CompanyServiceImpl extends CompanyService {
   override def find (key: Long): TwitterFuture[ Option[ Company ] ] = {
     TwitterFuture {
       companies.find(_.key.get == key)
+    }
+  }
+
+  override def save (employee: Company): TwitterFuture[ Boolean ] = {
+    TwitterFuture {
+      // save your company
+      true
+    }
+  }
+
+  override def delete (companyKey: Long): TwitterFuture[ Int ] = {
+    TwitterFuture {
+      // delete your company
+      1
     }
   }
 }

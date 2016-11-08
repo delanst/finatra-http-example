@@ -42,7 +42,7 @@ class EmployeeServiceImpl @Inject() (companyService: CompanyService) extends Emp
   override def delete (employeeKey: Long): TwitterFuture[ Int ] = {
     TwitterFuture {
       // delete your employee
-      true
+      1
     }
   }
 }

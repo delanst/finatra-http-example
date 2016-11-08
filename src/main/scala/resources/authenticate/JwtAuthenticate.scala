@@ -25,11 +25,14 @@ object JwtAuthenticate extends Logging {
 
   def validateToken (jwt: String): Boolean = {
     val validKey = JsonWebToken.validate(jwt, secretKey)
-    info("ValidateToken => " + jwt)
 
     val timed = claims(jwt) match {
       case Some(value) => value.find(_._1 == "now") match {
-        case Some(time) => println(time._2); true
+        case Some(time) =>
+          // invalidate a generated tokens where time is larger then 2 hours.
+          // This is not the best way but you get the idea. Implement your own idea about this.
+          val difference = System.currentTimeMillis() - time._2.toLong
+          if(difference > 7200000) false else true
         case None => false
       }
       case None => false
@@ -52,13 +55,13 @@ object JwtAuthenticate extends Logging {
     val authorization = request.headerMap.getOrElse("Authorization", "")
 
     if (!authorization.startsWith("Bearer")) {
-      throw new UnauthorizedException("Invalid token start. Starts with Bearer")
+      throw new UnauthorizedException("Invalid token start.")
     }
 
     val token = Some(authorization.split(" ")(1))
 
     JwtAuthenticate.validateToken(token.getOrElse("")) match {
-      case false => throw new UnauthorizedException("Access denied. Invalid token.")
+      case false => throw new UnauthorizedException("Access denied. Invalid token or expired.")
       case _ =>
     }
   }
